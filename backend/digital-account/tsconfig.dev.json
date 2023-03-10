@@ -1,0 +1,14 @@
+{
+    "extends": "./tsconfigbase/tsconfig.base.json",
+    "compilerOptions": {
+        "esModuleInterop": true,
+        "removeComments": true,
+        "outDir": "dist",
+        "baseUrl": "./",
+        "rootDir": "src"
+    },
+    "exclude": [
+        "__tests__",
+        "node_modules"
+    ]
+}

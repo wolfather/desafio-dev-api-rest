@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+      /* Visit https://aka.ms/tsconfig to read more about this file */
+      "module": "commonJS",
+      "target": "ES2022",
+      "lib": ["ESNext", "DOM"],
+      "types": ["node", "jest"],
+      "moduleResolution": "node",
+      /*"resolveJsonModule": false, /* Enable importing .json files. */
+      "allowSyntheticDefaultImports": true,
+      "noEmitOnError": true,
+      "strict": true,
+      "allowJs": false,
+      "declaration": true,
+      "strictNullChecks": false,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true
+    },
+    "compileOnSave": true,
+    "include": [
+      "../src/**/*"
+    ]
+  }
+  

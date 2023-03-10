@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfigbase/tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "./",                                  /* Specify the root folder within your source files. */
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,             /* Allow 'import x from y' when a module doesn't have a default export. */
+    "strict": true,
+    "allowJs": false,
+    "declaration": true,
+    "baseUrl": "./src"
+  }
+}

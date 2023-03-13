@@ -4,12 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc -p tsconfig.dev.json",
+    "dev": "nodemon",
+    "pretest": "jest --clearCache",
+    "dev:test": "jest --watchAll --detectOpenHandles --colors --verbose",
+    "test": "jest --passWithNoTests --silent",
+    "start": "node dist/server.js",
+    "start:prod": "node -r ts-node/register/transpile-only -r tsconfig-paths/register ./dist/server.js --project tsconfig.dev.json",
+    "start:pm2": "pm2 start ./dist/server.js --env production"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^4.11.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "cpf-cnpj-validator": "^1.0.3",

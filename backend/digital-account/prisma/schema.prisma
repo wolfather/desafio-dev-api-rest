@@ -1,0 +1,43 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "sqlite"
+    url = env("DATABASE_URL")
+}
+
+model User {
+    id                  Int @id @default(autoincrement())
+    documentNumber      Int @unique()
+    firstName           String
+    lastName            String
+    balance             Int
+    createdAt           DateTime @default(now())
+    updatedAt           DateTime @updatedAt
+    jointAccount        JointAccount[] @relation("user")
+    @@map("users")
+}
+
+model Account {
+    accountNumber       Int @id @default(autoincrement())
+    value               Int
+    blocked             Boolean
+    balance             Int
+    number              Int
+    agency              Int
+    createdAt           DateTime @default(now())
+    updatedAt           DateTime @updatedAt
+    jointAccount        JointAccount[] @relation("account")
+    @@map("accounts")
+}
+
+model JointAccount {
+    user        User @relation("user", fields: [userId], references: [documentNumber])
+    userId      Int
+    account     Account @relation("account", fields: [accountId], references: [accountNumber])
+    accountId   Int
+
+    @@id([userId, accountId])
+    @@map("jointaccounts")
+}

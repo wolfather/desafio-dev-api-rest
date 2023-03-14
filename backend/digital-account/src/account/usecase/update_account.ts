@@ -1,20 +1,23 @@
 import { Account } from "@prisma/client";
-import { UserInfraImp } from "../../infra/user_infra_implementation";
 import { ExecuteImplementation, AccountUsecaseImplementation } from "../implementation/account_usecase_implementation";
 import { AccountInfraImp } from "../../infra/account_infra_implementation";
+import { accountValidation } from "../validation/account";
 import { documentNumberValidation } from "../validation/documentnumber";
 
 
-export class GetAccountUsecase implements AccountUsecaseImplementation<Account> {
+export class UpdateAccountUsecase implements AccountUsecaseImplementation<Account> {
 
     constructor(private readonly db: AccountInfraImp) {}
 
     async execute(input: Partial<Account>): Promise<Partial<ExecuteImplementation>> {
         try {
-            if(input.accountNumber && documentNumberValidation(input.documentNumber!)) {
-                const result = await this.db.getAccount(input);
+            if(
+                accountValidation(input) && 
+                documentNumberValidation(input.documentNumber!)
+            ) {
+                const result = await this.db.updateAccount(input);
 
-                return result?.documentNumber ?
+                return result?.updatedAt ?
                     {
                         success: true,
                         data: result,

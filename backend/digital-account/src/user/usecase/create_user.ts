@@ -20,7 +20,7 @@ export class CreateUserUsecase implements UserUsecaseImplementation<User> {
                     {
                         success: false,
                         statusCode: 400,
-                        message: 'Already exist',
+                        message: 'Already exists',
                     } : 
                     {
                         success: true,

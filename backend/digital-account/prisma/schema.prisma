@@ -12,32 +12,18 @@ model User {
     documentNumber      String @unique()
     firstName           String
     lastName            String
-    createdAt           DateTime @default(now())
-    updatedAt           DateTime @updatedAt
-    jointAccount        JointAccount[] @relation("user")
-    @@map("users")
+    createdAt           DateTime? @default(now())
+    updatedAt           DateTime? @updatedAt
 }
 
 model Account {
     id                  Int @id @default(autoincrement())
     accountNumber       String @unique()
-    value               Int
+    documentNumber      String
     blocked             Boolean
     balance             Int
     number              Int
     agency              Int
-    createdAt           DateTime @default(now())
-    updatedAt           DateTime @updatedAt
-    jointAccount        JointAccount[] @relation("account")
-    @@map("accounts")
-}
-
-model JointAccount {
-    user        User @relation("user", fields: [userId], references: [documentNumber])
-    userId      String
-    account     Account @relation("account", fields: [accountId], references: [accountNumber])
-    accountId   String
-
-    @@id([userId, accountId])
-    @@map("jointaccounts")
+    createdAt           DateTime? @default(now())
+    updatedAt           DateTime? @updatedAt
 }

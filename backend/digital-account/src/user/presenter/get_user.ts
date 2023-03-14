@@ -19,7 +19,7 @@ export class GetUserPresenter implements PresenterImp {
                 message
             } = await this.getUserUsecase.execute(documentnumber);
             
-            if (statusCode === 200 && success) { 
+            if (statusCode === 200 && success) {
                 res.json({
                     data,
                     statusCode

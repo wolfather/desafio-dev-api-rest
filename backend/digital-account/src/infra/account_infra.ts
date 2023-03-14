@@ -8,11 +8,26 @@ export class AccountInfra extends DbConnect implements AccountInfraImp {
         super();
     }
 
-    async getAccount(input: string): Promise<Account> {
-        const account = await this.prisma.account.findUnique({
-            where: {accountNumber: input},
+    async getAccount(input: Partial<Account>): Promise<Account> {
+        const {
+            accountNumber,
+            documentNumber,
+        } = input;
+
+        const account = await this.prisma.account.findFirst({
+            where: {
+                accountNumber,
+                documentNumber
+            },
             select: {
                 accountNumber: true,
+                documentNumber: true,
+                balance: true,
+                agency: true,
+                number: true,
+                blocked: true,
+                createdAt: false,
+                updatedAt: false,
             }
         }) as Account;
 
@@ -20,27 +35,35 @@ export class AccountInfra extends DbConnect implements AccountInfraImp {
     }
     
     async getAccounts(input: string): Promise<Account[]> {
-        const listUsers = (await this.prisma.account.findMany({
+        const listAccounts = (await this.prisma.account.findMany({
             where: { accountNumber: input }
         }));
 
-        return listUsers;
+        return listAccounts;
     }
 
     async updateAccount(input: Partial<Account>): Promise<Partial<Account>> {
         const {
             accountNumber,
-            agency
+            balance,
+            blocked,
+            documentNumber,
         } = input;
 
         const account = await this.prisma.account.update({
             where: {accountNumber},
             data: {
-                agency,
+                balance,
+                blocked,
+                documentNumber,
             },
             select: {
                 agency: true,
-                accountNumber: true
+                accountNumber: true,
+                updatedAt: true,
+                balance: true,
+                documentNumber: true,
+                blocked: true,
             }
         });
 
@@ -59,24 +82,29 @@ export class AccountInfra extends DbConnect implements AccountInfraImp {
     async createAccount(input: Partial<Account>): Promise<Partial<Account>> {
         const { accountNumber } = input;
 
-        const accountExist = await this.prisma.account.findUnique({
-            where: {accountNumber}
+        const accountExists = await this.prisma.account.findUnique({
+            where: {accountNumber},
+            select: {createdAt: true}
         });
         
-        if(accountExist) {
+        if(accountExists) {
             throw new Error('account already exist');
         } else {
             const account = await this.prisma.account.create({
                 data: {
-                    accountNumber,
+                    accountNumber: input.accountNumber!,
+                    documentNumber: input.documentNumber!,
+                    balance: input.balance!,
+                    agency: input.agency!,
+                    number: input.number!,
+                    blocked: input.blocked!
                 },
                 select: {
                     accountNumber: true,
-                    createdAt: false
+                    blocked: true,
+                    createdAt: false,
                 }
             });
-
-            console.log("created", {account})
             
             return account;
         }

@@ -13,12 +13,18 @@ export class CreateAccountPresenter implements PresenterImp {
         try {
             const {
                 documentNumber,
-                accountNumber,
+                agency,
+                number,
+                balance,
+                blocked
             } = req.body;
 
             const input = {
                 documentNumber,
-                accountNumber
+                agency,
+                number,
+                balance: balance || 0,
+                blocked,
             };
 
             const {

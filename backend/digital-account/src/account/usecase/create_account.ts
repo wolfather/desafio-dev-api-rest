@@ -3,18 +3,26 @@ import { Account } from "@prisma/client";
 import { documentNumberValidation } from "../validation/documentnumber";
 import { AccountInfraImp } from "../../infra/account_infra_implementation";
 import * as uuid from 'uuid';
-import { createAccountValidation } from "../validation/account";
+import { accountValidation } from "../validation/account";
 
 export class CreateAccountUsecase implements AccountUsecaseImplementation<Account> {
 
     constructor(private readonly db: AccountInfraImp) {}
 
     async execute(input: Partial<Account>): Promise<Partial<ExecuteImplementation>> {
+        console.log({input})
+        console.log('dc', documentNumberValidation(input.documentNumber!))
         try {
-            if(createAccountValidation(input)) {
+            const accountObjectValidation = {
+                agency: input.agency,
+                number: input.number,
+                blocked: input.blocked,
+                balance: input.balance
+            };
+            console.log({accountObjectValidation});
+            if(accountValidation(accountObjectValidation) && documentNumberValidation(input.documentNumber!)) {
                 const newAccount: Partial<Account> = {
                     ...input,
-                    blocked: false,
                     accountNumber: uuid.v4(),
                 };
                 const result = await this.db.createAccount(newAccount);

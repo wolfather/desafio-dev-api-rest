@@ -9,7 +9,7 @@ export class GetAccountPresenter implements PresenterImp {
         private readonly getAccountUsecase: AccountUsecaseImplementation<Account>
     ) {}
 
-    async handle(req: Request, res: Response): Promise<any> {
+    async handle(req: Request, res: Response): Promise<void> {
         try {
             const { documentNumber, accountNumber } = req.body;
             const input = {
@@ -28,19 +28,19 @@ export class GetAccountPresenter implements PresenterImp {
                 res.json({
                     data,
                     statusCode
-                })
+                }).status(statusCode).send();
             } else {
                 res.json({
                     statusCode, 
                     message
-                });
+                }).status(statusCode!).send();
             }
 
         } catch(err) {
             res.json({
                 statusCode: 500,
                 message: 'Server error',
-            });
+            }).status(500).send();
         }
     }
 }

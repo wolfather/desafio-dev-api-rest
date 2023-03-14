@@ -8,7 +8,7 @@ export class AccountInfra extends DbConnect implements AccountInfraImp {
         super();
     }
 
-    async getAccount(input: number): Promise<Account> {
+    async getAccount(input: string): Promise<Account> {
         const account = await this.prisma.account.findUnique({
             where: {accountNumber: input},
             select: {
@@ -19,73 +19,66 @@ export class AccountInfra extends DbConnect implements AccountInfraImp {
         return account;
     }
     
-    async getUsers(input: string): Promise<User[]> {
-        const listUsers = (await this.prisma.user.findMany({
-            where: { documentNumber: input }
+    async getAccounts(input: string): Promise<Account[]> {
+        const listUsers = (await this.prisma.account.findMany({
+            where: { accountNumber: input }
         }));
 
         return listUsers;
     }
 
-    async updateUser(input: Partial<User>): Promise<Partial<User>> {
+    async updateAccount(input: Partial<Account>): Promise<Partial<Account>> {
         const {
-            firstName,
-            lastName,
-            documentNumber,
+            accountNumber,
+            agency
         } = input;
 
-        const user = await this.prisma.user.update({
-            where: {documentNumber},
+        const account = await this.prisma.account.update({
+            where: {accountNumber},
             data: {
-                firstName,
-                lastName
+                agency,
             },
             select: {
-                firstName: true,
-                lastName: true,
-                documentNumber: true
+                agency: true,
+                accountNumber: true
             }
         });
 
-        return user;
+        return account;
     }
 
-    async deleteUser(input: string): Promise<Partial<User>> {
-        const user = await this.prisma.user.delete({
-            where: {documentNumber: input},
+    async deleteAccount(input: string): Promise<Partial<Account>> {
+        const account = await this.prisma.account.delete({
+            where: {accountNumber: input},
             select: { createdAt: true }
         });
 
-        return user;
+        return account;
     }
 
-    async createUser(input: Partial<User>): Promise<Partial<User>> {
-        const { documentNumber } = input;
+    async createAccount(input: Partial<Account>): Promise<Partial<Account>> {
+        const { accountNumber } = input;
 
-        const userExist = await this.prisma.user.findUnique({
-            where: {documentNumber}
+        const accountExist = await this.prisma.account.findUnique({
+            where: {accountNumber}
         });
         
-        if(userExist) {
-            throw new Error('user already exist');
+        if(accountExist) {
+            throw new Error('account already exist');
         } else {
-            const user = await this.prisma.user.create({
+            const account = await this.prisma.account.create({
                 data: {
-                    documentNumber: input.documentNumber!,
-                    firstName: input.firstName!,
-                    lastName: input.lastName!
+                    accountNumber,
                 },
                 select: {
-                    firstName: true,
-                    lastName: true,
-                    documentNumber: true,
+                    accountNumber: true,
                     createdAt: false
                 }
             });
 
-            console.log("created", {user})
+            console.log("created", {account})
             
-            return user;
+            return account;
         }
     }
 }

@@ -6,10 +6,13 @@ import bodyParser from 'body-parser';
 import { UserInfra } from '../infra/user_infra';
 import { GetUserUsecase } from '../user/usecase/get_user';
 import { GetUserPresenter } from '../user/presenter/get_user';
+import { CreateAccountUsecase } from '../account/usecase/create_account';
+import { AccountInfra } from '../infra/account_infra';
 
 export class App {
     app: Application;
     private userDb = new UserInfra();
+    private accountDb = new AccountInfra();
     
     constructor() {
         this.app = express();
@@ -32,11 +35,13 @@ export class App {
         const getUserUsecase = new GetUserUsecase(this.userDb);
         const getUserPresenter = new GetUserPresenter(getUserUsecase);
 
+        const createAccountUseCase = new CreateAccountUsecase(this.accountDb)
+
         router
-            .post('/user', async (req, res) => (
+            .post('/create_user', async (req, res) => (
                 await createUserPresentation.handle(req, res)
             ))
-            .post('/user', async (req, res) => (
+            .post('/get_user', async (req, res) => (
                 await getUserPresenter.handle(req, res)
             ))
 

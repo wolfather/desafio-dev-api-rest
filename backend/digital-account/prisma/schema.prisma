@@ -19,7 +19,8 @@ model User {
 }
 
 model Account {
-    accountNumber       Int @id @default(autoincrement())
+    id                  Int @id @default(autoincrement())
+    accountNumber       String @unique()
     value               Int
     blocked             Boolean
     balance             Int
@@ -35,7 +36,7 @@ model JointAccount {
     user        User @relation("user", fields: [userId], references: [documentNumber])
     userId      String
     account     Account @relation("account", fields: [accountId], references: [accountNumber])
-    accountId   Int
+    accountId   String
 
     @@id([userId, accountId])
     @@map("jointaccounts")

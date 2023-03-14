@@ -8,7 +8,7 @@ export class GetUserPresenter implements PresenterImp {
         private readonly getUserUsecase: UserUsecaseImplementation<string>
     ) {}
 
-    async handle(req: Request, res: Response): Promise<any> {
+    async handle(req: Request, res: Response): Promise<void> {
         try {
             const { documentnumber } = req.body;
 
@@ -23,19 +23,19 @@ export class GetUserPresenter implements PresenterImp {
                 res.json({
                     data,
                     statusCode
-                })
+                }).status(statusCode).send();
             } else {
                 res.json({
                     statusCode, 
                     message
-                });
+                }).status(statusCode!).send();
             }
 
         } catch(err) {
             res.json({
                 statusCode: 500,
                 message: 'Server error',
-            });
+            }).status(500).send();
         }
     }
 }

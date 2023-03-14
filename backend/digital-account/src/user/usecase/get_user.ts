@@ -1,31 +1,26 @@
 import { UserInfraImp } from "../../infra/user_infra_implementation";
 import { ExecuteImplementation, UserUsecaseImplementation } from "../implementation/user_usecase_implementation";
-import { User } from "@prisma/client";
 import { documentNumberValidation } from "../validation/documentnumber";
 
-export class CreateUserUsecase implements UserUsecaseImplementation<User> {
+export class GetUserUsecase implements UserUsecaseImplementation<string> {
 
     constructor(private readonly db: UserInfraImp) {}
 
-    async execute(input: Partial<User>): Promise<Partial<ExecuteImplementation>> {
+    async execute(input: string): Promise<Partial<ExecuteImplementation>> {
         try {
-            if(
-                input.firstName?.trim() && 
-                input.lastName?.trim() && 
-                documentNumberValidation(input.documentNumber!)
-            ) {
-                const result = await this.db.createUser(input);
+            if(documentNumberValidation(input)) {
+                const result = await this.db.getUser(input);
 
-                return result.createdAt ?
-                    {
-                        success: false,
-                        statusCode: 400,
-                        message: 'Already exist',
-                    } : 
+                return result?.documentNumber ?
                     {
                         success: true,
                         data: result,
-                        statusCode: 201,
+                        statusCode: 200,
+                    } :
+                    {
+                        success: false,
+                        statusCode: 400,
+                        message: 'Not found',
                     };
             } else {
                 return {
@@ -36,7 +31,6 @@ export class CreateUserUsecase implements UserUsecaseImplementation<User> {
             }
 
         } catch(err) {
-            console.log({err})
             return {
                 statusCode: 500,
                 message: 'Server Error',

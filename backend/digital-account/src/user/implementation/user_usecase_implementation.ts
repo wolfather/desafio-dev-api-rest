@@ -1,12 +1,16 @@
-import { UserEntity } from "../entity/user";
+import { User } from "@prisma/client";
 
-export interface ExecuteImp {
+export interface ExecuteImplementation {
     success: boolean;
-    data: Partial<UserEntity|UserEntity[]>;
+    data: Partial<User>;
     statusCode: number;
     message: string;
 }
 
-export interface UserUsecaseImpl<UserEntity> {
-    execute(input: Partial<UserEntity>): Promise<Partial<ExecuteImp>>;
+export interface UserUsecaseImplementation<T> {
+    execute(input: string|Partial<T>): Promise<Partial<ExecuteImplementation>>;
+}
+
+export interface GetUserUsecaseImplementation {
+    execute(input: string): Promise<Partial<ExecuteImplementation>>;
 }

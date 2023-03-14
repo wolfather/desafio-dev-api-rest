@@ -1,27 +1,22 @@
 
 import { DbConnect } from "./db.infra";
-import { UserInfraImp } from "./user_infra_implementation";
-import { User } from "@prisma/client";
+import { AccountInfraImp } from "./account_infra_implementation";
+import { Account } from "@prisma/client";
 
-export class UserInfra extends DbConnect implements UserInfraImp {
+export class AccountInfra extends DbConnect implements AccountInfraImp {
     constructor() {
         super();
     }
 
-    async getUser(input: string): Promise<User> {
-        const user = await this.prisma.user.findUnique({
-            where: {documentNumber: input},
+    async getAccount(input: number): Promise<Account> {
+        const account = await this.prisma.account.findUnique({
+            where: {accountNumber: input},
             select: {
-                documentNumber: true,
-                firstName: true,
-                lastName: true,
-                createdAt: false,
-                updatedAt: false,
-                jointAccount: false
+                accountNumber: true,
             }
-        }) as User;
+        }) as Account;
 
-        return user;
+        return account;
     }
     
     async getUsers(input: string): Promise<User[]> {

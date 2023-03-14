@@ -1,26 +1,24 @@
 import { Request, Response } from "express";
 import { PresenterImp } from "../implementation/presenter_implementation";
-import { UserUsecaseImplementation } from "../implementation/user_usecase_implementation";
-import { User } from "@prisma/client";
+import { AccountUsecaseImplementation } from "../implementation/account_usecase_implementation";
+import { Account } from "@prisma/client";
 
-export class CreateUserPresenter implements PresenterImp {
+export class CreateAccountPresenter implements PresenterImp {
     
     constructor(
-        private readonly createUserUsecase: UserUsecaseImplementation<User>
+        private readonly createUserUsecase: AccountUsecaseImplementation<Account>
     ) {}
 
     async handle(req: Request, res: Response): Promise<any> {
         try {
             const {
-                firstName,
-                lastName,
-                documentNumber
+                documentNumber,
+                accountNumber,
             } = req.body;
 
             const input = {
-                firstName,
-                lastName,
-                documentNumber
+                documentNumber,
+                accountNumber
             };
 
             const {

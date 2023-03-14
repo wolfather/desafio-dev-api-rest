@@ -1,13 +1,11 @@
-import { PrismaClient } from "../../prisma/src/generated/client";
-
+import { prismaClient } from "../prisma/client";
 import * as dotenv from 'dotenv';
-
-import { UserInfraImp } from "../user/implementation/user_infra_implementation";
 
 dotenv.config()
 
 export class DbConnect {
-    protected prisma = new PrismaClient();
+    protected prisma = prismaClient;
+
     constructor() {}
 
     async connect(): Promise<void> {

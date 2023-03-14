@@ -9,10 +9,9 @@ datasource db {
 
 model User {
     id                  Int @id @default(autoincrement())
-    documentNumber      Int @unique()
+    documentNumber      String @unique()
     firstName           String
     lastName            String
-    balance             Int
     createdAt           DateTime @default(now())
     updatedAt           DateTime @updatedAt
     jointAccount        JointAccount[] @relation("user")
@@ -34,7 +33,7 @@ model Account {
 
 model JointAccount {
     user        User @relation("user", fields: [userId], references: [documentNumber])
-    userId      Int
+    userId      String
     account     Account @relation("account", fields: [accountId], references: [accountNumber])
     accountId   Int
 

@@ -1,52 +1,44 @@
-import express, { Application, Router } from 'express'
+import express, { Application, Router } from 'express';
 import cors from 'cors';
-import { RouterAdapter } from '../adapter/routeradapter';
 import { CreateUserUsecase } from '../user/usecase/create_user';
 import { CreateUserPresenter } from '../user/presenter/create_user';
-import { UserInfraImp } from '../user/implementation/user_infra_implementation';
 import bodyParser from 'body-parser';
+import { UserInfra } from '../infra/user_infra';
+import { GetUserUsecase } from '../user/usecase/get_user';
+import { GetUserPresenter } from '../user/presenter/get_user';
 
 export class App {
-    private _app: Application;
+    app: Application;
+    private userDb = new UserInfra();
+    
+    constructor() {
+        this.app = express();
 
-    get app(): Application {
-        return this._app;
+        this.app.options('*', cors());
+        this.app
+            .use(cors({origin: '*'}))
+            .use(express.json())
+            .use(bodyParser.json())
+            .use(bodyParser.urlencoded({extended: true}))
+            .use(this._routerSetup())
     }
 
-    constructor(private readonly userDb: UserInfraImp) {
-        this._app = express();
-
-        this._routerSetup();
-        this._config();
-        this._routerSetup()
-            .then(routes => {
-                this._app
-                    .use(cors({origin: '*'}))
-                    .use(routes)
-                    .use(express.json())
-                    .use(bodyParser.json())
-                    .use(bodyParser.urlencoded({extended: true}))
-            }).catch(function(err) {
-                console.log({err})
-            });
-    }
-
-    private _config(): void {
-        this._app.options('*', cors());
-
-    }
-
-    private async _routerSetup(): Promise<Router> {
-
+    private _routerSetup(): Router {
         const router = Router();
-        const routerAdapter = new RouterAdapter();
-
+        
         const createUserUseCase = new CreateUserUsecase(this.userDb);
+        const createUserPresentation = new CreateUserPresenter(createUserUseCase);
 
-        router.post(
-            '/user', 
-            await routerAdapter.adapt(new CreateUserPresenter(createUserUseCase))
-        )
+        const getUserUsecase = new GetUserUsecase(this.userDb);
+        const getUserPresenter = new GetUserPresenter(getUserUsecase);
+
+        router
+            .post('/user', async (req, res) => (
+                await createUserPresentation.handle(req, res)
+            ))
+            .post('/user', async (req, res) => (
+                await getUserPresenter.handle(req, res)
+            ))
 
         return router;
     }

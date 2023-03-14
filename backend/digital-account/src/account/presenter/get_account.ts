@@ -1,26 +1,20 @@
 import { Request, Response } from "express";
 import { PresenterImp } from "../implementation/presenter_implementation";
-import { UserUsecaseImplementation } from "../implementation/user_usecase_implementation";
-import { User } from "@prisma/client";
+import { AccountUsecaseImplementation } from "../implementation/account_usecase_implementation";
+import { Account } from "@prisma/client";
 
-export class CreateUserPresenter implements PresenterImp {
+export class GetAccountPresenter implements PresenterImp {
     
     constructor(
-        private readonly createUserUsecase: UserUsecaseImplementation<User>
+        private readonly getAccountUsecase: AccountUsecaseImplementation<Account>
     ) {}
 
     async handle(req: Request, res: Response): Promise<any> {
         try {
-            const {
-                firstName,
-                lastName,
-                documentNumber
-            } = req.body;
-
+            const { documentNumber, accountNumber } = req.body;
             const input = {
-                firstName,
-                lastName,
-                documentNumber
+                documentNumber, 
+                accountNumber
             };
 
             const {
@@ -28,9 +22,9 @@ export class CreateUserPresenter implements PresenterImp {
                 success, 
                 statusCode, 
                 message
-            } = await this.createUserUsecase.execute(input);
+            } = await this.getAccountUsecase.execute(input);
             
-            if (statusCode === 201 && success) { 
+            if (statusCode === 200 && success) { 
                 res.json({
                     data,
                     statusCode

@@ -23,6 +23,7 @@ export class GetAccountPresenter implements PresenterImp {
                 statusCode, 
                 message
             } = await this.getAccountUsecase.execute(input);
+            console.log('presenter:', {data, success, statusCode, message})
             
             if (statusCode === 200 && success) { 
                 res.json({

@@ -14,7 +14,7 @@ export class UpdateAccountUsecase implements AccountUsecaseImplementation<Accoun
             if(
                 accountValidation(input) && 
                 documentNumberValidation(input.documentNumber!)
-            ) {
+            ) { 
                 const result = await this.db.updateAccount(input);
 
                 return result?.updatedAt ?

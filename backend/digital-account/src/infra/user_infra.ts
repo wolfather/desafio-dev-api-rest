@@ -8,7 +8,7 @@ export class UserInfra extends DbConnect implements UserInfraImp {
         super();
     }
 
-    async getUser(input: string): Promise<User> {
+    async getUser(input: string): Promise<Partial<User>> {
         const user = await this.prisma.user.findUnique({
             where: {documentNumber: input},
             select: {
@@ -16,10 +16,9 @@ export class UserInfra extends DbConnect implements UserInfraImp {
                 firstName: true,
                 lastName: true,
                 createdAt: false,
-                updatedAt: false,
-                jointAccount: false
+                updatedAt: false
             }
-        }) as User;
+        }) as Partial<User>;
 
         return user;
     }

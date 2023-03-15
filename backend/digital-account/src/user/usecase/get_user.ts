@@ -7,9 +7,12 @@ export class GetUserUsecase implements UserUsecaseImplementation<string> {
     constructor(private readonly db: UserInfraImp) {}
 
     async execute(input: string): Promise<Partial<ExecuteImplementation>> {
+        console.log("getuser validation", input, documentNumberValidation(input))
         try {
             if(documentNumberValidation(input)) {
                 const result = await this.db.getUser(input);
+
+                console.log({result})
 
                 return result?.documentNumber ?
                     {

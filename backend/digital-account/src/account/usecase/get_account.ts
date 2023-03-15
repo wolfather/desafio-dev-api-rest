@@ -13,7 +13,7 @@ export class GetAccountUsecase implements AccountUsecaseImplementation<Account> 
         try {
             if(input.accountNumber && documentNumberValidation(input.documentNumber!)) {
                 const result = await this.db.getAccount(input);
-
+                console.log({result})
                 return result?.documentNumber ?
                     {
                         success: true,

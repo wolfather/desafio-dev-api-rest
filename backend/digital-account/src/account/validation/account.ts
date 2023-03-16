@@ -12,6 +12,10 @@ const rules = {
 
 
 export const accountValidation = (input: Partial<Account>): boolean => {
+    const v = z.number().positive()
+    console.log('balance:', input.balance, v.safeParse(input.balance));
+
+    
     const accountModel = z.object({
         agency: z.number()
             .positive()

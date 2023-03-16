@@ -10,13 +10,13 @@ export class AccountInfra extends DbConnect implements AccountInfraImp {
 
     async getAccount(input: Partial<Account>): Promise<Account> {
         const {
-            accountNumber,
+            //accountNumber,
             documentNumber,
         } = input;
 
         const account = await this.prisma.account.findFirst({
             where: {
-                accountNumber,
+                //accountNumber,
                 documentNumber
             },
             select: {
@@ -34,9 +34,9 @@ export class AccountInfra extends DbConnect implements AccountInfraImp {
         return account;
     }
     
-    async getAccounts(input: string): Promise<Account[]> {
+    async getAccounts(input: Partial<Account>): Promise<Account[]> {
         const listAccounts = (await this.prisma.account.findMany({
-            where: { accountNumber: input }
+            where: { documentNumber: input.documentNumber }
         }));
 
         return listAccounts;

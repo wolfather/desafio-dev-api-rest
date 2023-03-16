@@ -1,16 +1,16 @@
 import { Account } from "@prisma/client";
 
-export interface ExecuteImplementation {
+export interface ExecuteImplementation<T> {
     success: boolean;
-    data: Partial<Account>;
+    data: Partial<T>;
     statusCode: number;
     message: string;
 }
 
-export interface AccountUsecaseImplementation<Account> {
-    execute(input: Partial<Account>): Promise<Partial<ExecuteImplementation>>;
+export interface AccountUsecaseImplementation<T> {
+    execute(input: Partial<T>): Promise<Partial<ExecuteImplementation<T>>>;
 }
 
-export interface GetAccountUsecaseImplementation {
-    execute(input: Partial<Account>): Promise<Partial<ExecuteImplementation>>;
+export interface GetAccountUsecaseImplementation<T> {
+    execute(input: Partial<T>): Promise<Partial<ExecuteImplementation<T>>>;
 }

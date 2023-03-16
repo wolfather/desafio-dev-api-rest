@@ -9,13 +9,30 @@ export class UpdateAccountUsecase implements AccountUsecaseImplementation<Accoun
 
     constructor(private readonly db: AccountInfraImp) {}
 
-    async execute(input: Partial<Account>): Promise<Partial<ExecuteImplementation>> {
+    async execute(input: Partial<Account>): Promise<Partial<ExecuteImplementation<Account>>> {
         try {
+            const accountExists = await this.db.getAccount(input);
+
+            const updateDataToValidate = {
+                balance: input.balance,
+                agency: input.agency,
+                number: input.number,
+                blocked: input.blocked
+            };
+            console.log(accountValidation(updateDataToValidate))
+            console.log({accountExists})
             if(
-                accountValidation(input) && 
+                accountExists &&
+                accountValidation(updateDataToValidate) && 
                 documentNumberValidation(input.documentNumber!)
-            ) { 
-                const result = await this.db.updateAccount(input);
+            ) {
+                const newBalanceValue = (input.withdraw! <= (accountExists.balance -1)) ? accountExists.balance - input.balance! : accountExists.balance;
+                console.log({newBalanceValue});
+                const data = {
+                    ...input, 
+                    balance: newBalanceValue
+                }
+                const result = await this.db.updateAccount(data);
 
                 return result?.updatedAt ?
                     {

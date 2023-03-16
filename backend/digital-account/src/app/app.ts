@@ -1,16 +1,18 @@
 import express, { Application, Router } from 'express';
 import cors from 'cors';
-import { CreateUserUsecase } from '../user/usecase/create_user';
+import { CreateUserUsecase } from '../user/domain/create_user';
 import { CreateUserPresenter } from '../user/presenter/create_user';
 import bodyParser from 'body-parser';
 import { UserInfra } from '../infra/user_infra';
-import { GetUserUsecase } from '../user/usecase/get_user';
+import { GetUserUsecase } from '../user/domain/get_user';
 import { GetUserPresenter } from '../user/presenter/get_user';
-import { CreateAccountUsecase } from '../account/usecase/create_account';
+import { CreateAccountUsecase } from '../account/domain/create_account';
 import { AccountInfra } from '../infra/account_infra';
 import { GetAccountPresenter } from '../account/presenter/get_account';
 import { CreateAccountPresenter } from '../account/presenter/create_account';
-import { GetAccountUsecase } from '../account/usecase/get_account';
+import { GetAccountUsecase } from '../account/domain/get_account';
+import { UpdateAccountUsecase } from '../account/domain/update_account';
+import { UpdateAccountPresenter } from '../account/presenter/update_account';
 
 export class App {
     app: Application;
@@ -20,8 +22,8 @@ export class App {
     constructor() {
         this.app = express();
 
-        this.app.options('*', cors());
         this.app
+            .options('*', cors())
             .use(cors({origin: '*'}))
             .use(express.json())
             .use(bodyParser.json())
@@ -44,6 +46,9 @@ export class App {
         const getAccountUseCase = new GetAccountUsecase(this.accountDb);
         const getAccountPresenter = new GetAccountPresenter(getAccountUseCase);
 
+        const updateAccountUseCase = new UpdateAccountUsecase(this.accountDb);
+        const updateACcountPresenter = new UpdateAccountPresenter(updateAccountUseCase);
+
         router
             .post('/create_user', async (req, res) => (
                 await createUserPresentation.handle(req, res)
@@ -57,6 +62,10 @@ export class App {
             .post('/get_account', async(req, res) => (
                 await getAccountPresenter.handle(req, res)
             ))
+            .put('/update_account', async(req, res) => (
+                await updateACcountPresenter.handle(req, res)
+            ))
+
 
         return router;
     }

@@ -1,20 +1,22 @@
 import { Account } from "@prisma/client";
-import { UserInfraImp } from "../../infra/user_infra_implementation";
 import { ExecuteImplementation, AccountUsecaseImplementation } from "../implementation/account_usecase_implementation";
 import { AccountInfraImp } from "../../infra/account_infra_implementation";
 import { documentNumberValidation } from "../validation/documentnumber";
 
 
-export class GetAccountUsecase implements AccountUsecaseImplementation<Account> {
+export class GetAccountUsecase implements AccountUsecaseImplementation<Account|Account[]> {
 
     constructor(private readonly db: AccountInfraImp) {}
 
-    async execute(input: Partial<Account>): Promise<Partial<ExecuteImplementation>> {
+    async execute(input: Partial<Account>): Promise<Partial<ExecuteImplementation<Account|Account[]>>> {
         try {
-            if(input.accountNumber && documentNumberValidation(input.documentNumber!)) {
+            if(
+                //input.accountNumber && 
+                documentNumberValidation(input.documentNumber!)
+            ) {
                 const result = await this.db.getAccount(input);
                 console.log({result})
-                return result?.documentNumber ?
+                return result ?
                     {
                         success: true,
                         data: result,
@@ -34,6 +36,7 @@ export class GetAccountUsecase implements AccountUsecaseImplementation<Account> 
             }
 
         } catch(err) {
+            console.log({err});
             return {
                 statusCode: 500,
                 message: 'Server Error',

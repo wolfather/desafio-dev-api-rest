@@ -3,10 +3,10 @@ import { PresenterImp } from "../implementation/presenter_implementation";
 import { AccountUsecaseImplementation } from "../implementation/account_usecase_implementation";
 import { Account } from "@prisma/client";
 
-export class GetAccountPresenter implements PresenterImp {
+export class UpdateAccountPresenter implements PresenterImp {
     
     constructor(
-        private readonly getAccountUsecase: AccountUsecaseImplementation<Account|Account[]>
+        private readonly updateAccountUsecase: AccountUsecaseImplementation<Account|Account[]>
     ) {}
 
     async handle(req: Request, res: Response): Promise<void> {
@@ -22,8 +22,8 @@ export class GetAccountPresenter implements PresenterImp {
                 success, 
                 statusCode, 
                 message
-            } = await this.getAccountUsecase.execute(input);
-            console.log('presenter:', {data, success, statusCode, message})
+            } = await this.updateAccountUsecase.execute(input);
+            console.log('update presenter:', {data, success, statusCode, message})
             
             if (statusCode === 200 && success) { 
                 res.json({

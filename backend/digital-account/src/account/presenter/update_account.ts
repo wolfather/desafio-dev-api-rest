@@ -11,10 +11,24 @@ export class UpdateAccountPresenter implements PresenterImp {
 
     async handle(req: Request, res: Response): Promise<void> {
         try {
-            const { documentNumber, accountNumber } = req.body;
+            const { 
+                documentNumber, 
+                accountNumber, 
+                agency, 
+                number, 
+                blocked, 
+                balance, 
+                withdrawValue,
+            } = req.body;
+
             const input = {
                 documentNumber, 
-                accountNumber
+                accountNumber,
+                agency,
+                number,
+                blocked,
+                balance,
+                withdrawValue,
             };
 
             const {
@@ -23,7 +37,6 @@ export class UpdateAccountPresenter implements PresenterImp {
                 statusCode, 
                 message
             } = await this.updateAccountUsecase.execute(input);
-            console.log('update presenter:', {data, success, statusCode, message})
             
             if (statusCode === 200 && success) { 
                 res.json({

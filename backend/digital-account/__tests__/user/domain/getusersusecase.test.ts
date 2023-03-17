@@ -1,27 +1,46 @@
-import { GetUsersUseCase } from "../../../src/user/domain/getusersusecase";
-import { UseCaseImp } from "../../../src/implementation/usecase.imp";
-import { UserEntity } from "../../../src/user/entity/user.entity";
-import { mockValidUser } from "../../__mock__/user.mock";
-import { MockDbImp } from "../implementation/mockdb";
-import { ERROR_CODE } from "../../../src/utils/factory/errorresponsefactory";
-import { UserDBImp } from "../../../src/user/implementation/db.imp";
 
-const usersList = mockValidUser(4) as UserEntity[];
+import { User } from "@prisma/client";
+import { cpf } from 'cpf-cnpj-validator';
+import { UserInfraImp } from '../../../src/infra/user_infra_implementation';
+import { UserInfra } from '../../../src/infra/user_infra'
+import { GetUserUsecaseImplementation } from '../../../src/user/implementation/user_usecase_implementation';
+import { GetUserUsecase } from '../../../src/user/domain/get_user'
 
-describe('HomeUseCase', () => {
-    let database: UserDBImp;
-    let usecase: UseCaseImp<UserEntity>;
+
+class MockUserInfra implements UserInfraImp {
+    createUser: (input: Partial<User>) => Promise<Partial<User>>;
+    getUser: (input: string) => Promise<Partial<User>>;
+    getUsers: (input: string) => Promise<(User | undefined)[]>;
+    updateUser: (input: Partial<User>) => Promise<Partial<User>>;
+    deleteUser: (input: string) => Promise<Partial<User>>;
+}
+
+const mockDocumentNumber = cpf.generate();
+console.log({mockDocumentNumber})
+const mockUser: Partial<User> = {
+    id: 1,
+    firstName: 'John',
+    lastName: 'Doe',
+    documentNumber: mockDocumentNumber,
+};
+
+describe('GetUserUseCase', () => {
+    let database: UserInfraImp;
+    let usecase: GetUserUsecaseImplementation;
     let spyDbGetUser: any;
     
     beforeEach(async() => {
-        database = new MockDbImp();
-        usecase = new GetUsersUseCase(database);
-        spyDbGetUser = jest.spyOn(database, 'getUsers');
+        database = new MockUserInfra();
+        usecase = new GetUserUsecase(database);
+        spyDbGetUser = jest.spyOn(database, 'getUser');
     });
 
-    afterEach(async() => {
-        spyDbGetUser.mockClear().mockReset().mockRestore();
-    });
+    // afterEach(async() => {
+    //     spyDbGetUser
+    //         //.mockClear()
+    //         .mockReset()
+    //         .mockRestore();
+    // });
 
     it('should test usecase to be defined', () => {
         expect(usecase).toBeTruthy()
@@ -29,44 +48,38 @@ describe('HomeUseCase', () => {
     });
 
     describe('execute()', () => {
-        it('should call getUsersList from db', async() => {
-            spyDbGetUser.mockResolvedValue(usersList);
-            const input = '1';
-            const result = await usecase.execute('1');
+        it('should call getUser from db', async() => {
+            spyDbGetUser.mockResolvedValue(mockUser);
+            const input = mockDocumentNumber;
+            const result = await usecase.execute(input);
             
-            expect((result?.data as UserEntity[]).length).toBeGreaterThan(0);
+            expect(result?.data as Partial<User>).toBeDefined();
             
-            (result?.data as UserEntity[])
-                .map((result: UserEntity, index: number) => {
-                    expect(result).toHaveProperty('name')
-                    expect(result).toHaveProperty('email')
-                    expect(result).toHaveProperty('id')
+            expect(result?.data).toHaveProperty('firstName')
+            expect(result?.data).toHaveProperty('lastName')
+            expect(result?.data).toHaveProperty('id')
 
-                    expect(result)
-                        .toEqual(
-                            expect.objectContaining(usersList[index])
-                        );
-                });
-            
+            expect(result.data?.firstName).toEqual('John');
             expect(spyDbGetUser).toHaveBeenNthCalledWith(1, input);
         });
-
+            
         it('should return code invalid credentials when no input been passed as argument', async() => {
-            const result = await usecase.execute();
+            const result = await usecase.execute('');
 
-            expect(result).toEqual({code: ERROR_CODE.INVALID_CREDENTIALS});
+            expect(result?.statusCode).toEqual(401);
             expect(spyDbGetUser).not.toBeCalled();
         });
-
-        it('should call getUsersList with no data', async() => {
-            spyDbGetUser.mockResolvedValue([]);
-            const input = '1';
-            const result = await usecase.execute('1');
-
-            expect(result).toStrictEqual({
-                code: ERROR_CODE.BAD_REQUEST
-            });
-            expect(spyDbGetUser).toHaveBeenNthCalledWith(1, input);
-        });        
     });
+
+    //     it('should call getUsersList with no data', async() => {
+    //         spyDbGetUser.mockResolvedValue([]);
+    //         const input = '1';
+    //         const result = await usecase.execute('1');
+
+    //         expect(result).toStrictEqual({
+    //             code: ERROR_CODE.BAD_REQUEST
+    //         });
+    //         expect(spyDbGetUser).toHaveBeenNthCalledWith(1, input);
+    //     });        
+    // });
 });

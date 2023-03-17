@@ -19,19 +19,29 @@ export class UpdateAccountUsecase implements AccountUsecaseImplementation<Accoun
                 number: input.number,
                 blocked: input.blocked
             };
-            console.log(accountValidation(updateDataToValidate))
-            console.log({accountExists})
+            console.log({updateDataToValidate})
+            
             if(
                 accountExists &&
                 accountValidation(updateDataToValidate) && 
                 documentNumberValidation(input.documentNumber!)
             ) {
-                const newBalanceValue = (input.withdraw! <= (accountExists.balance -1)) ? accountExists.balance - input.balance! : accountExists.balance;
-                console.log({newBalanceValue});
+                const balanceValue = () => {
+                    if(
+                        input.withdrawValue && 
+                        input.withdrawValue !== 0 && 
+                        ((accountExists.balance -1) >= Number(input.withdrawValue!))
+                    ) {
+                        return (accountExists.balance - 1) - Number(input.withdrawValue)
+                    }
+                    return accountExists.balance;
+                };
+
                 const data = {
                     ...input, 
-                    balance: newBalanceValue
-                }
+                    balance: balanceValue()
+                };
+
                 const result = await this.db.updateAccount(data);
 
                 return result?.updatedAt ?

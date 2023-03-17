@@ -13,6 +13,8 @@ import { CreateAccountPresenter } from '../account/presenter/create_account';
 import { GetAccountUsecase } from '../account/domain/get_account';
 import { UpdateAccountUsecase } from '../account/domain/update_account';
 import { UpdateAccountPresenter } from '../account/presenter/update_account';
+import { UpdateUserUsecase } from '../user/domain/update_user';
+import { UpdateUserPresenter } from '../user/presenter/update_user';
 
 export class App {
     app: Application;
@@ -40,9 +42,12 @@ export class App {
         const getUserUsecase = new GetUserUsecase(this.userDb);
         const getUserPresenter = new GetUserPresenter(getUserUsecase);
 
+        const updateUserUseCase = new UpdateUserUsecase(this.userDb);
+        const updateUserPresenter = new UpdateUserPresenter(updateUserUseCase);
+        
         const createAccountUseCase = new CreateAccountUsecase(this.accountDb);
         const createAccountPresenter = new CreateAccountPresenter(createAccountUseCase);
-
+        
         const getAccountUseCase = new GetAccountUsecase(this.accountDb);
         const getAccountPresenter = new GetAccountPresenter(getAccountUseCase);
 
@@ -55,6 +60,9 @@ export class App {
             ))
             .post('/get_user', async (req, res) => (
                 await getUserPresenter.handle(req, res)
+            ))
+            .put('/update_user', async (req, res) => (
+                await updateUserPresenter.handle(req, res)
             ))
             .post('/create_account', async(req, res) => (
                 await createAccountPresenter.handle(req, res)

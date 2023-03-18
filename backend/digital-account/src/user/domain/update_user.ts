@@ -11,12 +11,9 @@ export class UpdateUserUsecase implements UserUsecaseImplementation<User> {
     constructor(private readonly db: UserInfraImp) {}
 
     async execute(input: User): Promise<Partial<ExecuteImplementation>> {
-        console.log("update validation", input, documentNumberValidation(input.documentNumber))
         try {
             if(documentNumberValidation(input.documentNumber)) {
                 const result = await this.db.updateUser(input);
-
-                console.log({result})
 
                 return result?.updatedAt ?
                     {

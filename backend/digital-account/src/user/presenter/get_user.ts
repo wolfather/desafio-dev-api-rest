@@ -11,7 +11,6 @@ export class GetUserPresenter implements PresenterImp {
     async handle(req: Request, res: Response): Promise<void> {
         try {
             const { documentNumber } = req.body;
-            console.log('doc number:', documentNumber);
 
             const {
                 data, 
@@ -33,7 +32,6 @@ export class GetUserPresenter implements PresenterImp {
             }
 
         } catch(err) {
-            console.log('err', {err});
             res.json({
                 statusCode: 500,
                 message: 'Server error',

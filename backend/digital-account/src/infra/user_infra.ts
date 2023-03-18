@@ -47,7 +47,8 @@ export class UserInfra extends DbConnect implements UserInfraImp {
             select: {
                 firstName: true,
                 lastName: true,
-                documentNumber: true
+                documentNumber: true,
+                updatedAt: true,
             }
         });
 
@@ -87,8 +88,6 @@ export class UserInfra extends DbConnect implements UserInfraImp {
                 }
             });
 
-            console.log("created", {user})
-            
             return user;
         }
     }

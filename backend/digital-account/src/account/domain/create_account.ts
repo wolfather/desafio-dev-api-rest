@@ -9,9 +9,7 @@ export class CreateAccountUsecase implements AccountUsecaseImplementation<Accoun
 
     constructor(private readonly db: AccountInfraImp) {}
 
-    async execute(input: Partial<Account>): Promise<Partial<ExecuteImplementation>> {
-        console.log({input})
-        console.log('dc', documentNumberValidation(input.documentNumber!))
+    async execute(input: Partial<Account>): Promise<Partial<ExecuteImplementation<Account>>> {
         try {
             const accountObjectValidation = {
                 agency: input.agency,
@@ -19,7 +17,7 @@ export class CreateAccountUsecase implements AccountUsecaseImplementation<Accoun
                 blocked: input.blocked,
                 balance: input.balance
             };
-            console.log({accountObjectValidation});
+
             if(accountValidation(accountObjectValidation) && documentNumberValidation(input.documentNumber!)) {
                 const newAccount: Partial<Account> = {
                     ...input,

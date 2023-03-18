@@ -36,7 +36,6 @@ export class CreateUserUsecase implements UserUsecaseImplementation<User> {
             }
 
         } catch(err) {
-            console.log({err})
             return {
                 statusCode: 500,
                 message: 'Server Error',

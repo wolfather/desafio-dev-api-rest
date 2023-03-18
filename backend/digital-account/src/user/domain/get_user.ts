@@ -11,8 +11,6 @@ export class GetUserUsecase implements UserUsecaseImplementation<string> {
             if(documentNumberValidation(input)) {
                 const result = await this.db.getUser(input);
 
-                console.log({result})
-
                 return result?.documentNumber ?
                     {
                         success: true,

@@ -9,14 +9,10 @@ export class AccountInfra extends DbConnect implements AccountInfraImp {
     }
 
     async getAccount(input: Partial<Account>): Promise<Account> {
-        const {
-            //accountNumber,
-            documentNumber,
-        } = input;
+        const {documentNumber} = input;
 
         const account = await this.prisma.account.findFirst({
             where: {
-                //accountNumber,
                 documentNumber
             },
             select: {
@@ -59,6 +55,7 @@ export class AccountInfra extends DbConnect implements AccountInfraImp {
             },
             select: {
                 agency: true,
+                number: true,
                 accountNumber: true,
                 updatedAt: true,
                 balance: true,
@@ -97,11 +94,14 @@ export class AccountInfra extends DbConnect implements AccountInfraImp {
                     balance: input.balance!,
                     agency: input.agency!,
                     number: input.number!,
-                    blocked: input.blocked!
+                    blocked: input.blocked!,
+                    withdrawValue: 0,
                 },
                 select: {
                     accountNumber: true,
                     blocked: true,
+                    agency: true,
+                    number: true,
                     createdAt: false,
                 }
             });

@@ -10,12 +10,9 @@ export class GetAccountUsecase implements AccountUsecaseImplementation<Account|A
 
     async execute(input: Partial<Account>): Promise<Partial<ExecuteImplementation<Account|Account[]>>> {
         try {
-            if(
-                //input.accountNumber && 
-                documentNumberValidation(input.documentNumber!)
-            ) {
+            if(documentNumberValidation(input.documentNumber!)) {
                 const result = await this.db.getAccount(input);
-                console.log({result})
+
                 return result ?
                     {
                         success: true,
@@ -36,7 +33,6 @@ export class GetAccountUsecase implements AccountUsecaseImplementation<Account|A
             }
 
         } catch(err) {
-            console.log({err});
             return {
                 statusCode: 500,
                 message: 'Server Error',

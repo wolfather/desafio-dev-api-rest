@@ -12,7 +12,6 @@ export class UpdateUserPresenter implements PresenterImp {
     async handle(req: Request, res: Response): Promise<void> {
         try {
             const { documentNumber, firstName, lastName } = req.body;
-            console.log('doc number:', documentNumber);
             const input = {documentNumber, firstName, lastName};
 
             const {
@@ -35,7 +34,6 @@ export class UpdateUserPresenter implements PresenterImp {
             }
 
         } catch(err) {
-            console.log('err', {err});
             res.json({
                 statusCode: 500,
                 message: 'Server error',

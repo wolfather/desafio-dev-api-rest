@@ -19,8 +19,7 @@ export class UpdateAccountUsecase implements AccountUsecaseImplementation<Accoun
                 number: input.number,
                 blocked: input.blocked
             };
-            console.log({updateDataToValidate})
-            
+
             if(
                 accountExists &&
                 accountValidation(updateDataToValidate) && 

@@ -12,8 +12,6 @@ const rules = {
 
 
 export const accountValidation = (input: Partial<Account>): boolean => {
-    const v = z.number().positive()
-    
     const accountModel = z.object({
         agency: z.number()
             .positive()
